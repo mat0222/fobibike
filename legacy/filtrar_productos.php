@@ -4,26 +4,23 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 include 'config.php';
 
-// Recoger filtros
 $search   = $_GET['search'] ?? '';
 $category = $_GET['category'] ?? '';
 $supplier = $_GET['supplier'] ?? '';
 $type     = $_GET['type'] ?? '';
-$stock    = $_GET['stock'] ?? ''; // "in-stock,low-stock,out-of-stock"
+$stock    = $_GET['stock'] ?? '';
 $stockArray = array_filter(explode(',', $stock));
 
 $where = [];
 $params = [];
 $types = "";
 
-// Categoría
 if ($category && $category !== 'all') {
     $where[] = "category=?";
     $params[] = $category;
     $types .= "s";
 }
 
-// Búsqueda
 if ($search) {
     $where[] = "(name LIKE ? OR code LIKE ?)";
     $params[] = "%$search%";
@@ -31,23 +28,18 @@ if ($search) {
     $types .= "ss";
 }
 
-// Proveedor
 if ($supplier) {
     $where[] = "supplier=?";
     $params[] = $supplier;
     $types .= "s";
 }
 
-// Tipo
 if ($type) {
     $where[] = "type=?";
     $params[] = $type;
     $types .= "s";
 }
 
-
-
-// Stock
 if (count($stockArray) > 0) {
     $stockConditions = [];
     foreach ($stockArray as $s) {
@@ -62,8 +54,7 @@ if (count($stockArray) > 0) {
     }
 }
 
-// Construir query
-$sql = "SELECT * FROM productos"; // Suponiendo tabla unificada 'productos'
+$sql = "SELECT * FROM productos";
 if (count($where) > 0) $sql .= " WHERE " . implode(" AND ", $where);
 
 $stmt = $conn->prepare($sql);

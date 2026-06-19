@@ -16,7 +16,6 @@ if (!$data) {
     exit;
 }
 
-// Validación
 $code = trim($data['code'] ?? '');
 $name = trim($data['name'] ?? '');
 $supplier = intval($data['supplier'] ?? 0);
@@ -30,7 +29,6 @@ if (!$code || !$name || !$category) {
     exit;
 }
 
-// Categorías permitidas
 $categoryMap = [
     'bicicletas'    => ['table' => 'bicicletas',    'idField' => 'id_bicicleta',   'supplierField' => 'id_proveedor'],
     'repuestos'     => ['table' => 'repuestos',     'idField' => 'id_repuesto',    'supplierField' => 'proveedor_id'],
@@ -106,6 +104,3 @@ try {
     if (isset($conn)) $conn->close();
 }
 ?>
-
-
-

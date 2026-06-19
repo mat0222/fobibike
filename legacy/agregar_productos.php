@@ -7,11 +7,9 @@ function respond($data){
     exit;
 }
 
-// Leer JSON
 $data = json_decode(file_get_contents('php://input'), true);
 if(!$data) respond(['success'=>false,'error'=>'Datos inválidos']);
 
-// Tablas y columnas
 $tables = [
     'bicicletas'=>'bicicletas',
     'accesorios'=>'accesorios',
@@ -32,7 +30,6 @@ if(!isset($tables[$category])) respond(['success'=>false,'error'=>'Categoría in
 $table = $tables[$category];
 $cols = $columns[$table];
 
-// Valores seguros
 $code = $data['code'] ?? '';
 $name = $data['name'] ?? '';
 $type = $data['type'] ?? '';
@@ -41,7 +38,6 @@ $priceInstallment = isset($data['installmentPrice']) ? (float)$data['installment
 $stock = isset($data['stock']) ? (int)$data['stock'] : 0;
 $supplier = isset($data['supplier']) ? (int)$data['supplier'] : 0;
 
-// Preparar consulta
 $stmt = $conn->prepare(
     "INSERT INTO $table ({$cols['code']}, {$cols['name']}, {$cols['type']}, {$cols['price']}, {$cols['installmentPrice']}, {$cols['stock']}, {$cols['supplier']})
     VALUES (?, ?, ?, ?, ?, ?, ?)"
@@ -49,16 +45,7 @@ $stmt = $conn->prepare(
 
 if(!$stmt) respond(['success'=>false,'error'=>$conn->error]);
 
-$stmt->bind_param(
-    "sssddii",
-    $code,
-    $name,
-    $type,
-    $priceCash,
-    $priceInstallment,
-    $stock,
-    $supplier
-);
+$stmt->bind_param("sssddii", $code, $name, $type, $priceCash, $priceInstallment, $stock, $supplier);
 
 if($stmt->execute()){
     respond(['success'=>true]);
@@ -68,4 +55,3 @@ if($stmt->execute()){
 
 $stmt->close();
 $conn->close();
-

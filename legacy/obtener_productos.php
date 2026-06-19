@@ -14,8 +14,6 @@ $tables = [
     'repuestos'     => ['category' => 'repuestos', 'code' => 'codigo', 'name' => 'nombre', 'type' => 'categoria', 'price' => 'precio_contado', 'installmentPrice' => 'precio_plazo', 'stock' => 'stock', 'supplier' => 'proveedor_id']
 ];
 
-$products = [];
-
 foreach ($tables as $table => $cols) {
     $sql = "SELECT 
                    {$cols['code']} AS code,

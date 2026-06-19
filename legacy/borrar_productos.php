@@ -5,7 +5,6 @@ error_reporting(E_ALL);
 header('Content-Type: application/json');
 include 'config.php';
 
-// Leer JSON enviado
 $input = file_get_contents("php://input");
 $data = json_decode($input, true);
 
@@ -17,7 +16,6 @@ if (!$data || empty($data['code']) || empty($data['category'])) {
 $code = $conn->real_escape_string($data['code']);
 $category = $conn->real_escape_string($data['category']);
 
-// Mapear tablas
 $tables = [
     'bicicletas'    => 'bicicletas',
     'accesorios'    => 'accesorios',
@@ -31,8 +29,6 @@ if (!isset($tables[$category])) {
 }
 
 $table = $tables[$category];
-
-// Ejecutar DELETE por código
 $sql = "DELETE FROM $table WHERE codigo = '$code'";
 
 if ($conn->query($sql) === TRUE) {
@@ -43,5 +39,3 @@ if ($conn->query($sql) === TRUE) {
 
 $conn->close();
 ?>
-
-
