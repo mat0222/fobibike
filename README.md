@@ -18,7 +18,6 @@ fobibike/
 ├── backend/          # API REST (Node.js)
 ├── frontend/         # App React
 ├── scripts/          # Importación y prueba de BD
-├── legacy/           # PHP v1 archivado (no usar)
 ├── fobibike_db.sql   # Dump inicial de la base
 └── README.md
 ```
@@ -97,7 +96,3 @@ Key gratis: [console.groq.com/keys](https://console.groq.com/keys)
 ## Credenciales
 
 Usuario en tabla `usuarios` (ej: `eduardo`).
-
-## Legacy
-
-El código PHP/XAMPP original está en `legacy/` solo como referencia histórica.
