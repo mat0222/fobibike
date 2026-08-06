@@ -4,7 +4,9 @@ import Layout from '../components/Layout';
 import FilterSidebar from '../components/FilterSidebar';
 import ProductModal from '../components/ProductModal';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
+import { HiddenDataPanel } from '../components/DemoBanner';
 import { api } from '../api/client';
+import { IS_DEMO } from '../config/demo';
 
 function getStockKey(stock) {
   if (stock === 0) return 'out-of-stock';
@@ -44,6 +46,13 @@ export default function Dashboard() {
   const [deletingProduct, setDeletingProduct] = useState(null);
 
   const loadData = useCallback(async () => {
+    if (IS_DEMO) {
+      setProducts([]);
+      setSuppliers([]);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError('');
     try {
@@ -169,31 +178,41 @@ export default function Dashboard() {
           <div>
             <h2 className="text-2xl font-bold text-[#0a1628]">Inventario</h2>
             <p className="text-slate-500 text-sm mt-1">
-              {loading ? 'Cargando productos...' : `${filtered.length} de ${products.length} productos`}
+              {IS_DEMO
+                ? 'Vista previa — datos ocultos por privacidad'
+                : loading
+                  ? 'Cargando productos...'
+                  : `${filtered.length} de ${products.length} productos`}
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setAddingProduct(true)}
-              className="flex items-center gap-2 px-4 py-2.5 bg-[#22c55e] hover:bg-[#16a34a] text-white font-semibold rounded-xl transition-colors shadow-sm"
-            >
-              <FiPlus />
-              Agregar producto
-            </button>
-            <div className="flex items-center gap-2 px-4 py-2.5 bg-white rounded-xl border border-slate-200 shadow-sm">
-              <div className="p-1.5 bg-[#1a3a8f]/10 rounded-lg">
-                <FiPackage className="text-[#1a3a8f]" />
-              </div>
-              <div className="text-sm">
-                <span className="text-slate-400">Total</span>{' '}
-                <strong className="text-[#0a1628]">{products.length}</strong>
+          {!IS_DEMO && (
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setAddingProduct(true)}
+                className="flex items-center gap-2 px-4 py-2.5 bg-[#22c55e] hover:bg-[#16a34a] text-white font-semibold rounded-xl transition-colors shadow-sm"
+              >
+                <FiPlus />
+                Agregar producto
+              </button>
+              <div className="flex items-center gap-2 px-4 py-2.5 bg-white rounded-xl border border-slate-200 shadow-sm">
+                <div className="p-1.5 bg-[#1a3a8f]/10 rounded-lg">
+                  <FiPackage className="text-[#1a3a8f]" />
+                </div>
+                <div className="text-sm">
+                  <span className="text-slate-400">Total</span>{' '}
+                  <strong className="text-[#0a1628]">{products.length}</strong>
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
 
+        {IS_DEMO ? (
+          <HiddenDataPanel section="el inventario completo (productos, precios y stock)" />
+        ) : (
+          <>
         {error && (
           <div className="bg-red-50 text-red-700 px-4 py-3 rounded-xl border border-red-200">
             {error}
@@ -292,7 +311,6 @@ export default function Dashboard() {
             </table>
           </div>
         </div>
-      </div>
 
       {editingProduct && (
         <ProductModal
@@ -321,6 +339,9 @@ export default function Dashboard() {
           onConfirm={handleDelete}
         />
       )}
+          </>
+        )}
+      </div>
     </Layout>
   );
 }

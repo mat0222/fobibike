@@ -1,13 +1,20 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { api } from '../api/client';
+import { DEMO_USER, IS_DEMO } from '../config/demo';
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(IS_DEMO ? DEMO_USER : null);
+  const [loading, setLoading] = useState(!IS_DEMO);
 
   const checkSession = useCallback(async () => {
+    if (IS_DEMO) {
+      setUser(DEMO_USER);
+      setLoading(false);
+      return;
+    }
+
     try {
       const data = await api.me();
       setUser(data.user ?? null);
@@ -23,12 +30,27 @@ export function AuthProvider({ children }) {
   }, [checkSession]);
 
   const login = async (usuario, password) => {
+    if (IS_DEMO) {
+      setUser(DEMO_USER);
+      return DEMO_USER;
+    }
+
     const data = await api.login(usuario, password);
     setUser(data.user);
     return data.user;
   };
 
+  const enterDemo = () => {
+    setUser(DEMO_USER);
+    return DEMO_USER;
+  };
+
   const logout = async () => {
+    if (IS_DEMO) {
+      setUser(null);
+      return;
+    }
+
     try {
       await api.logout();
     } catch {
@@ -39,7 +61,15 @@ export function AuthProvider({ children }) {
   };
 
   const value = useMemo(
-    () => ({ user, loading, login, logout, isAuthenticated: !!user }),
+    () => ({
+      user,
+      loading,
+      login,
+      logout,
+      enterDemo,
+      isAuthenticated: !!user,
+      isDemo: IS_DEMO,
+    }),
     [user, loading]
   );
 

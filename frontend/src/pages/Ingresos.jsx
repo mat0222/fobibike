@@ -9,7 +9,9 @@ import {
 } from 'react-icons/fi';
 import Layout from '../components/Layout';
 import SaleModal from '../components/SaleModal';
+import { HiddenDataPanel } from '../components/DemoBanner';
 import { api } from '../api/client';
+import { IS_DEMO } from '../config/demo';
 
 function formatPrice(value) {
   return new Intl.NumberFormat('es-AR', {
@@ -68,6 +70,14 @@ export default function Ingresos() {
   const [showSaleModal, setShowSaleModal] = useState(false);
 
   const loadData = useCallback(async () => {
+    if (IS_DEMO) {
+      setStats(null);
+      setSales([]);
+      setProducts([]);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError('');
     try {
@@ -105,16 +115,20 @@ export default function Ingresos() {
   const sidebar = (
     <div className="p-4">
       <p className="text-blue-100/70 text-sm leading-relaxed">
-        Registra ventas para llevar el control de ingresos. Al confirmar una venta, el stock se descuenta automaticamente.
+        {IS_DEMO
+          ? 'En la demo no se muestran ventas ni montos reales. Solo la estructura del panel.'
+          : 'Registra ventas para llevar el control de ingresos. Al confirmar una venta, el stock se descuenta automaticamente.'}
       </p>
-      <button
-        type="button"
-        onClick={() => setShowSaleModal(true)}
-        className="mt-4 w-full flex items-center justify-center gap-2 py-3 bg-[#22c55e] hover:bg-[#16a34a] text-white font-semibold rounded-xl transition-colors shadow-lg shadow-green-900/20"
-      >
-        <FiPlus />
-        Nueva venta
-      </button>
+      {!IS_DEMO && (
+        <button
+          type="button"
+          onClick={() => setShowSaleModal(true)}
+          className="mt-4 w-full flex items-center justify-center gap-2 py-3 bg-[#22c55e] hover:bg-[#16a34a] text-white font-semibold rounded-xl transition-colors shadow-lg shadow-green-900/20"
+        >
+          <FiPlus />
+          Nueva venta
+        </button>
+      )}
     </div>
   );
 
@@ -124,18 +138,16 @@ export default function Ingresos() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h2 className="text-2xl font-bold text-[#0a1628]">Control de ingresos</h2>
-            <p className="text-slate-500 text-sm mt-1">Estadisticas y registro de ventas</p>
+            <p className="text-slate-500 text-sm mt-1">
+              {IS_DEMO ? 'Vista previa — datos ocultos por privacidad' : 'Estadisticas y registro de ventas'}
+            </p>
           </div>
-          <button
-            type="button"
-            onClick={() => setShowSaleModal(true)}
-            className="lg:hidden flex items-center justify-center gap-2 px-5 py-2.5 bg-[#22c55e] text-white font-semibold rounded-xl"
-          >
-            <FiPlus />
-            Nueva venta
-          </button>
         </div>
 
+        {IS_DEMO ? (
+          <HiddenDataPanel section="estadísticas, gráficos y el listado de ventas" />
+        ) : (
+          <>
         {error && (
           <div className="bg-red-50 text-red-700 px-4 py-3 rounded-xl border border-red-200">{error}</div>
         )}
@@ -277,7 +289,6 @@ export default function Ingresos() {
             </div>
           </>
         )}
-      </div>
 
       {showSaleModal && (
         <SaleModal
@@ -286,6 +297,9 @@ export default function Ingresos() {
           onSaved={loadData}
         />
       )}
+          </>
+        )}
+      </div>
     </Layout>
   );
 }

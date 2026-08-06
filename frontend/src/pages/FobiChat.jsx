@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { FiSend, FiMessageCircle, FiRefreshCw } from 'react-icons/fi';
 import { MdPedalBike } from 'react-icons/md';
 import Layout from '../components/Layout';
+import { HiddenDataPanel } from '../components/DemoBanner';
 import { api } from '../api/client';
+import { IS_DEMO } from '../config/demo';
 
 const SUGGESTIONS = [
   '¿Que productos tienen stock bajo?',
@@ -84,39 +86,62 @@ export default function FobiChat() {
           </div>
         </div>
         <p className="text-blue-100/80 text-sm leading-relaxed">
-          Consulta y administra inventario, ventas e ingresos con IA (Groq, gratis).
+          {IS_DEMO
+            ? 'En la demo el chat no está conectado. Solo se muestra la estructura del panel.'
+            : 'Consulta y administra inventario, ventas e ingresos con IA (Groq, gratis).'}
         </p>
       </div>
 
-      <div>
-        <p className="text-xs font-bold text-blue-100/60 uppercase tracking-wider mb-2 px-1">
-          Sugerencias
-        </p>
-        <div className="space-y-1.5">
-          {SUGGESTIONS.map((s) => (
-            <button
-              key={s}
-              type="button"
-              onClick={() => sendMessage(s)}
-              disabled={loading}
-              className="w-full text-left px-3 py-2 rounded-lg text-sm text-blue-50 bg-white/5 hover:bg-white/15 border border-white/10 transition-colors disabled:opacity-50"
-            >
-              {s}
-            </button>
-          ))}
-        </div>
-      </div>
+      {!IS_DEMO && (
+        <>
+          <div>
+            <p className="text-xs font-bold text-blue-100/60 uppercase tracking-wider mb-2 px-1">
+              Sugerencias
+            </p>
+            <div className="space-y-1.5">
+              {SUGGESTIONS.map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => sendMessage(s)}
+                  disabled={loading}
+                  className="w-full text-left px-3 py-2 rounded-lg text-sm text-blue-50 bg-white/5 hover:bg-white/15 border border-white/10 transition-colors disabled:opacity-50"
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
 
-      <button
-        type="button"
-        onClick={resetChat}
-        className="w-full flex items-center justify-center gap-2 py-2 text-sm text-blue-100/70 hover:text-white transition-colors"
-      >
-        <FiRefreshCw size={14} />
-        Nueva conversacion
-      </button>
+          <button
+            type="button"
+            onClick={resetChat}
+            className="w-full flex items-center justify-center gap-2 py-2 text-sm text-blue-100/70 hover:text-white transition-colors"
+          >
+            <FiRefreshCw size={14} />
+            Nueva conversacion
+          </button>
+        </>
+      )}
     </div>
   );
+
+  if (IS_DEMO) {
+    return (
+      <Layout sidebar={sidebar}>
+        <div className="max-w-4xl mx-auto space-y-4">
+          <div>
+            <h2 className="text-2xl font-bold text-[#0a1628] flex items-center gap-2">
+              <FiMessageCircle className="text-[#2563eb]" />
+              Chat con Fobi
+            </h2>
+            <p className="text-slate-500 text-sm mt-1">Vista previa — datos y chat ocultos por privacidad</p>
+          </div>
+          <HiddenDataPanel section="el chat con IA y consultas al inventario real" />
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout sidebar={sidebar}>

@@ -1,10 +1,12 @@
 import { FiLogOut, FiMenu } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 import SidebarNav from './SidebarNav';
+import { DemoBanner } from './DemoBanner';
+import { assetUrl } from '../config/demo';
 import { useState } from 'react';
 
 export default function Layout({ children, sidebar }) {
-  const { user, logout } = useAuth();
+  const { user, logout, isDemo } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -16,13 +18,10 @@ export default function Layout({ children, sidebar }) {
       >
         <div className="shrink-0 p-5 border-b border-white/20 bg-white/5">
           <img
-            src="/FOBIBike.png"
+            src={assetUrl('FOBIBike.png')}
             alt="FOBI Bike"
             className="w-full max-w-[200px] mx-auto object-contain"
           />
-          <p className="text-center text-blue-100/80 text-xs mt-2 font-medium tracking-wide uppercase">
-            Panel de administracion
-          </p>
         </div>
         <SidebarNav />
         <div className="flex-1 overflow-y-auto overscroll-contain">{sidebar}</div>
@@ -37,6 +36,7 @@ export default function Layout({ children, sidebar }) {
       )}
 
       <div className="lg:ml-72 min-h-screen flex flex-col min-w-0">
+        <DemoBanner />
         <header className="bg-white border-b border-slate-200/80 px-4 lg:px-8 py-3 flex items-center justify-between sticky top-0 z-20 shadow-sm">
           <button
             type="button"
@@ -47,14 +47,14 @@ export default function Layout({ children, sidebar }) {
           </button>
 
           <img
-            src="/FOBIBike.png"
+            src={assetUrl('FOBIBike.png')}
             alt="FOBI Bike"
             className="h-8 object-contain lg:hidden"
           />
 
           <div className="flex items-center gap-3 ml-auto">
             <span className="text-sm text-slate-500 hidden sm:block">
-              <span className="text-slate-400">Usuario:</span>{' '}
+              <span className="text-slate-400">{isDemo ? 'Demo:' : 'Usuario:'}</span>{' '}
               <strong className="text-[#1a3a8f] capitalize">{user?.usuario}</strong>
             </span>
             <button
@@ -63,7 +63,7 @@ export default function Layout({ children, sidebar }) {
               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100 hover:bg-red-50 hover:text-red-600 text-slate-600 text-sm font-medium transition-colors"
             >
               <FiLogOut />
-              <span className="hidden sm:inline">Salir</span>
+              <span className="hidden sm:inline">{isDemo ? 'Salir de demo' : 'Salir'}</span>
             </button>
           </div>
         </header>

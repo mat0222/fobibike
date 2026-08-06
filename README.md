@@ -17,8 +17,7 @@ Sistema de administración para FOBI Bike — inventario, ventas e IA (Fobi).
 fobibike/
 ├── backend/          # API REST (Node.js)
 ├── frontend/         # App React
-├── scripts/          # Importación y prueba de BD
-├── fobibike_db.sql   # Dump inicial de la base
+├── .github/          # Deploy a GitHub Pages (demo)
 └── README.md
 ```
 
@@ -29,14 +28,7 @@ fobibike/
 
 ## Instalación rápida
 
-### 1. Base de datos
-
-```powershell
-.\scripts\import-database.ps1
-.\scripts\test-connection.ps1
-```
-
-### 2. Backend
+### 1. Backend
 
 ```powershell
 cd backend
@@ -48,7 +40,7 @@ npm run dev
 
 API: `http://localhost:3001`
 
-### 3. Frontend
+### 2. Frontend
 
 ```powershell
 cd frontend
@@ -57,6 +49,8 @@ npm run dev
 ```
 
 App: `http://localhost:5173`
+
+> La base de datos MySQL (`fobibike_db`) debe existir y estar configurada en `backend/.env`.
 
 ## Configuración Fobi (IA)
 
@@ -96,3 +90,21 @@ Key gratis: [console.groq.com/keys](https://console.groq.com/keys)
 ## Credenciales
 
 Usuario en tabla `usuarios` (ej: `eduardo`).
+
+## Demo en GitHub Pages
+
+Hay una **vista pública** del frontend (sin datos reales) en:
+
+**https://mat0222.github.io/fobibike/**
+
+- Se ve la estructura: login demo, menú, inventario, ingresos y Fobi
+- Los datos del negocio **no se muestran** (mensaje amigable de privacidad)
+- No hace falta usuario ni contraseña
+
+### Activar Pages (una sola vez)
+
+1. En GitHub: **Settings → Pages**
+2. **Source:** GitHub Actions
+3. Hacé push a `main` (o corré el workflow *Deploy GitHub Pages*)
+
+El workflow está en `.github/workflows/deploy-pages.yml`.

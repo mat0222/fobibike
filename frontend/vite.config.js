@@ -2,8 +2,10 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [react(), tailwindcss()],
+  // GitHub Pages: https://mat0222.github.io/fobibike/
+  base: mode === 'pages' ? '/fobibike/' : '/',
   server: {
     port: 5173,
     proxy: {
@@ -13,4 +15,4 @@ export default defineConfig({
       },
     },
   },
-})
+}))
