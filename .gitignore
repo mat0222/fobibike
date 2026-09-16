@@ -1,0 +1,24 @@
+# Dependencias y build
+node_modules/
+dist/
+build/
+
+# Secretos — NUNCA commitear
+.env
+.env.local
+.env.*.local
+backend/.env
+
+# Dump local con inventario y usuarios reales
+fobibike_db.sql
+
+# Logs y SO
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+*.swp
+*.swo
